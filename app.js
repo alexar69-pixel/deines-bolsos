@@ -845,6 +845,10 @@ function initEvents() {
         
         showPaymentModal(total, () => {
             const numPedido = Math.floor(Math.random() * 900000) + 100000;
+            const orderId = `DE-${numPedido}`;
+            
+            // Guardar pedido en localstorage
+            saveOrderToHistory(orderId, carrito, total, "cliente@deines.com");
             
             // Crear un modal de éxito visual premium
             const checkoutModal = document.createElement('div');
@@ -867,8 +871,9 @@ function initEvents() {
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
                 <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
-                <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
-                <button id="btn-close-checkout-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
+                <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#${orderId}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
+                <button id="btn-close-checkout-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px; margin-bottom: 10px;">Aceptar</button>
+                <button id="btn-goto-tracking" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px; background-color: var(--color-brand-secondary);">Seguir mi Pedido</button>
             `;
             
             document.body.appendChild(checkoutModal);
@@ -888,6 +893,20 @@ function initEvents() {
                 carrito = [];
                 updateCart();
                 saveCart();
+            });
+
+            document.getElementById('btn-goto-tracking').addEventListener('click', () => {
+                checkoutModal.remove();
+                modalBackdrop.classList.remove('active');
+                modalBackdrop.style.zIndex = '';
+                document.body.style.overflow = '';
+                
+                // Vaciar carrito
+                carrito = [];
+                updateCart();
+                saveCart();
+                
+                window.location.href = `tracking.html?orderId=${orderId}`;
             });
         });
     });
@@ -951,6 +970,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('cart-page-container')) {
         initCartPage();
     }
+    
+    // Si estamos en la página de seguimiento
+    if (document.getElementById('tracking-search-form')) {
+        initTrackingPage();
+    }
 });
 
 // --- Lógica de la Página de Carrito Completo (cart.html) ---
@@ -999,6 +1023,10 @@ function initCartPage() {
             
             showPaymentModal(total, () => {
                 const numPedido = Math.floor(Math.random() * 900000) + 100000;
+                const orderId = `DE-${numPedido}`;
+                
+                // Guardar pedido en localstorage
+                saveOrderToHistory(orderId, carrito, total, "cliente@deines.com");
                 
                 // Crear el modal de éxito
                 const checkoutModal = document.createElement('div');
@@ -1021,8 +1049,9 @@ function initCartPage() {
                         <i class="fa-solid fa-circle-check"></i>
                     </div>
                     <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
-                    <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
-                    <button id="btn-close-cart-page-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
+                    <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#${orderId}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
+                    <button id="btn-close-cart-page-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px; margin-bottom: 10px;">Aceptar</button>
+                    <button id="btn-goto-cart-tracking" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px; background-color: var(--color-brand-secondary);">Seguir mi Pedido</button>
                 `;
                 
                 document.body.appendChild(checkoutModal);
@@ -1043,6 +1072,21 @@ function initCartPage() {
                     
                     // Redirigir a inicio
                     window.location.href = "index.html";
+                });
+
+                document.getElementById('btn-goto-cart-tracking').addEventListener('click', () => {
+                    checkoutModal.remove();
+                    modalBackdrop.classList.remove('active');
+                    modalBackdrop.style.zIndex = '';
+                    
+                    // Vaciar carrito
+                    carrito = [];
+                    descuentoAplicado = 0;
+                    localStorage.removeItem('deines_discount');
+                    saveCart();
+                    updateCart();
+                    
+                    window.location.href = `tracking.html?orderId=${orderId}`;
                 });
             });
         });
@@ -1463,6 +1507,295 @@ function showPaymentModal(amount, callbackSuccess) {
         modalBackdrop.style.zIndex = '';
         document.body.style.overflow = '';
     }
+}
+
+// --- LÓGICA DE SEGUIMIENTO DE PEDIDOS (tracking.html) ---
+
+function initTrackingPage() {
+    const trackingForm = document.getElementById('tracking-search-form');
+    const inputOrderId = document.getElementById('tracking-order-id');
+    const inputEmail = document.getElementById('tracking-email');
+    const errorContainer = document.getElementById('tracking-error-container');
+    const resultsPanel = document.getElementById('tracking-results-panel');
+    
+    // Auto-formatear con máscara DE-XXXXXX
+    if (inputOrderId) {
+        inputOrderId.addEventListener('input', (e) => {
+            let val = e.target.value.toUpperCase().replace(/[^D|E|\d]/g, '');
+            if (val.length > 0 && !val.startsWith('D')) {
+                val = 'DE-' + val.replace(/\D/g, '');
+            } else if (val.length > 1 && !val.startsWith('DE')) {
+                val = 'DE-' + val.substring(1).replace(/\D/g, '');
+            } else if (val.startsWith('DE') && val.length > 2 && val.charAt(2) !== '-') {
+                val = 'DE-' + val.substring(2).replace(/\D/g, '');
+            } else if (val.startsWith('DE-')) {
+                val = 'DE-' + val.substring(3).replace(/\D/g, '');
+            }
+            e.target.value = val.substring(0, 9); // DE-XXXXXX son 9 caracteres
+        });
+    }
+
+    if (trackingForm) {
+        trackingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const orderId = inputOrderId.value.toUpperCase().trim();
+            const email = inputEmail.value.toLowerCase().trim();
+            
+            trackOrder(orderId, email);
+        });
+    }
+    
+    // Leer parámetros de URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderIdParam = urlParams.get('orderId');
+    if (orderIdParam) {
+        if (inputOrderId) inputOrderId.value = orderIdParam;
+        if (inputEmail) inputEmail.value = "cliente@deines.com";
+        trackOrder(orderIdParam, "cliente@deines.com");
+    }
+}
+
+function trackOrder(orderId, email) {
+    const errorContainer = document.getElementById('tracking-error-container');
+    const resultsPanel = document.getElementById('tracking-results-panel');
+    
+    if (!orderId.startsWith('DE-') || orderId.length < 9) {
+        showTrackingError("Formato de pedido no válido. Debe comenzar con 'DE-' seguido de 6 números.");
+        return;
+    }
+    
+    // Buscar en localstorage
+    const orders = JSON.parse(localStorage.getItem('deines_orders')) || [];
+    let order = orders.find(o => o.id === orderId);
+    
+    if (!order) {
+        // Generar pedido de demostración de forma determinista para que cualquier código funcione
+        const numPart = parseInt(orderId.replace(/\D/g, ''));
+        if (isNaN(numPart)) {
+            showTrackingError("Número de pedido no válido.");
+            return;
+        }
+        
+        // Simular un pedido determinista
+        const mockItems = [];
+        const pIndex1 = (numPart % 3);
+        const pIndex2 = ((numPart + 3) % 4);
+        
+        const possibleIds = ["bolso-bandolera-menta", "bolso-hombro-camel", "bolso-bandolera-coral", "bolso-mano-marino"];
+        const p1 = PRODUCTOS.find(p => p.id === possibleIds[pIndex1]);
+        const p2 = PRODUCTOS.find(p => p.id === possibleIds[pIndex2]);
+        
+        mockItems.push({
+            id: p1.id,
+            title: p1.title,
+            price: p1.price,
+            image: p1.image,
+            color: p1.colors[0],
+            qty: 1,
+            customDetails: p1.customizable ? { initials: "ABC", strapName: "Bandana Clásica", strapPrice: 0 } : null
+        });
+        
+        if (numPart % 2 === 0 && p2) {
+            mockItems.push({
+                id: p2.id,
+                title: p2.title,
+                price: p2.price,
+                image: p2.image,
+                color: p2.colors[0],
+                qty: 1,
+                customDetails: null
+            });
+        }
+        
+        const mockSubtotal = mockItems.reduce((acc, curr) => acc + curr.price * curr.qty, 0);
+        const mockTotal = mockSubtotal + (mockSubtotal >= 80 ? 0 : 3.95);
+        
+        // El último dígito decide el estado de progreso
+        const lastDigit = numPart % 10;
+        let mockStatus = "recibido";
+        let mockTimestamp = Date.now() - (1800 * 1000); // Hace 30 minutos
+        
+        if (lastDigit >= 2 && lastDigit <= 4) {
+            mockStatus = "preparacion";
+            mockTimestamp = Date.now() - (6 * 3600 * 1000); // Hace 6 horas
+        } else if (lastDigit >= 5 && lastDigit <= 7) {
+            mockStatus = "enviado";
+            mockTimestamp = Date.now() - (24 * 3600 * 1000); // Hace 1 día
+        } else if (lastDigit === 8) {
+            mockStatus = "reparto";
+            mockTimestamp = Date.now() - (40 * 3600 * 1000); // Hace 1.5 días
+        } else if (lastDigit === 9) {
+            mockStatus = "entregado";
+            mockTimestamp = Date.now() - (72 * 3600 * 1000); // Hace 3 días
+        }
+        
+        order = {
+            id: orderId,
+            timestamp: mockTimestamp,
+            items: mockItems,
+            total: mockTotal,
+            email: email,
+            address: "Calle Augusto Figueroa 32, 28004 Madrid, España",
+            isMock: true,
+            mockStatus: mockStatus
+        };
+    }
+    
+    // Ocultar error
+    if (errorContainer) errorContainer.style.display = 'none';
+    
+    // Rellenar datos en el panel
+    document.getElementById('result-order-id').textContent = order.id;
+    
+    // Calcular estado real o usar el mock
+    let status = "recibido";
+    if (order.isMock) {
+        status = order.mockStatus;
+    } else {
+        const minutesElapsed = (Date.now() - order.timestamp) / 60000;
+        if (minutesElapsed < 2) {
+            status = "recibido";
+        } else if (minutesElapsed < 5) {
+            status = "preparacion";
+        } else if (minutesElapsed < 10) {
+            status = "enviado";
+        } else if (minutesElapsed < 15) {
+            status = "reparto";
+        } else {
+            status = "entregado";
+        }
+    }
+    
+    // Actualizar badge del estado
+    const statusBadge = document.getElementById('result-status-badge');
+    statusBadge.textContent = status.toUpperCase();
+    statusBadge.className = `tracking-status-badge status-${status}`;
+    
+    // Calcular fecha estimada
+    const estDeliveryDateStart = new Date(order.timestamp + (24 * 3600 * 1000));
+    const estDeliveryDateEnd = new Date(order.timestamp + (48 * 3600 * 1000));
+    
+    const options = { day: 'numeric', month: 'short' };
+    const estText = `${estDeliveryDateStart.toLocaleDateString('es-ES', options)} - ${estDeliveryDateEnd.toLocaleDateString('es-ES', options)}`;
+    
+    document.getElementById('result-delivery-date').textContent = status === "entregado" ? "Entregado" : estText;
+    
+    // Actualizar barra de progreso y pasos del timeline
+    updateTimelineUI(status);
+    
+    // Inyectar productos en el desglose
+    const itemsList = document.getElementById('tracked-items-list');
+    itemsList.innerHTML = "";
+    
+    order.items.forEach(item => {
+        const customDetailsHTML = item.customDetails ? `
+            <div class="cart-custom-details" style="margin-top:2px; display:inline-flex;">
+                <span>Iniciales: <strong>${item.customDetails.initials || 'Ninguna'}</strong></span>
+                <span style="margin-left:10px;">Asa: <strong>${item.customDetails.strapName}</strong></span>
+            </div>
+        ` : '';
+        
+        const card = document.createElement('div');
+        card.className = 'tracked-item-card';
+        card.innerHTML = `
+            <div class="tracked-item-info">
+                <img src="${item.image}" alt="${item.title}" class="tracked-item-img">
+                <div class="tracked-item-meta">
+                    <h5>${item.title}</h5>
+                    <p>Color: ${item.color.toUpperCase()} | Cantidad: ${item.qty}</p>
+                    ${customDetailsHTML}
+                </div>
+            </div>
+            <div class="tracked-item-price">
+                <strong>${(item.price * item.qty).toFixed(2)} €</strong>
+            </div>
+        `;
+        itemsList.appendChild(card);
+    });
+    
+    // Mostrar panel
+    if (resultsPanel) {
+        resultsPanel.style.display = 'block';
+    }
+}
+
+function updateTimelineUI(status) {
+    const steps = ["recibido", "preparacion", "enviado", "reparto", "entregado"];
+    const statusIndex = steps.indexOf(status);
+    
+    // Actualizar clases de cada paso
+    steps.forEach((step, idx) => {
+        const el = document.getElementById(`step-${step}`);
+        if (el) {
+            el.classList.remove('active', 'completed');
+            if (idx === statusIndex) {
+                el.classList.add('active');
+            } else if (idx < statusIndex) {
+                el.classList.add('completed');
+            }
+        }
+    });
+    
+    // Calcular porcentaje de barra
+    let percentage = 0;
+    if (statusIndex > 0) {
+        percentage = (statusIndex / (steps.length - 1)) * 100;
+    }
+    
+    const progressBar = document.getElementById('timeline-progress-bar');
+    if (progressBar) {
+        if (window.innerWidth <= 600) {
+            progressBar.style.width = '4px';
+            progressBar.style.height = `${percentage}%`;
+            progressBar.style.left = '14px';
+        } else {
+            progressBar.style.height = '4px';
+            progressBar.style.width = `${percentage}%`;
+            progressBar.style.left = '25px';
+        }
+    }
+    
+    // Mensaje explicativo
+    const stepDescriptionEl = document.getElementById('step-detail-description');
+    
+    const descriptions = {
+        "recibido": "📦 <strong>Pedido Recibido:</strong> Hemos recibido tu pedido con éxito. Está en cola de procesamiento en nuestro sistema.",
+        "preparacion": "⚙️ <strong>En Taller / Preparación:</strong> Tus bolsos están siendo revisados e hilados por nuestros artesanos en el taller de Madrid. Si has solicitado personalización, se están troquelando las iniciales en relieve de pan de oro.",
+        "enviado": "🚚 <strong>Enviado:</strong> Tu paquete ya ha salido de nuestros talleres y ha sido entregado a la empresa de mensajería (Correos Express). Número de seguimiento: <strong>CX-482094827</strong>.",
+        "reparto": "🛵 <strong>En Reparto:</strong> Tu pedido está en el camión de reparto. El transportista realizaría la entrega a lo largo de hoy en Augusto Figueroa 32, Madrid.",
+        "entregado": "✅ <strong>Entregado:</strong> El paquete ha sido entregado correctamente en la dirección indicada. ¡Esperamos que disfrutes de tu nuevo bolso DEINES!"
+    };
+    
+    if (stepDescriptionEl) {
+        stepDescriptionEl.style.display = 'block';
+        stepDescriptionEl.innerHTML = descriptions[status] || "";
+    }
+}
+
+function showTrackingError(msg) {
+    const errorContainer = document.getElementById('tracking-error-container');
+    const errorMessage = document.getElementById('tracking-error-message');
+    const resultsPanel = document.getElementById('tracking-results-panel');
+    
+    if (resultsPanel) resultsPanel.style.display = 'none';
+    if (errorContainer && errorMessage) {
+        errorMessage.textContent = msg;
+        errorContainer.style.display = 'flex';
+    }
+}
+
+function saveOrderToHistory(orderId, items, total, email = "cliente@deines.com") {
+    let orders = JSON.parse(localStorage.getItem('deines_orders')) || [];
+    const newOrder = {
+        id: orderId,
+        timestamp: Date.now(),
+        items: JSON.parse(JSON.stringify(items)),
+        total: total,
+        email: email,
+        address: "Augusto Figueroa 32, 28004 Madrid, España"
+    };
+    orders.push(newOrder);
+    localStorage.setItem('deines_orders', JSON.stringify(orders));
 }
 
 
