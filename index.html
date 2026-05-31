@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>DEINES | Tienda Online de Bolsos y Complementos Premium en Madrid</title>
+    <meta name="description" content="Descubre la nueva colección de bolsos y complementos de diseño de DEINES. Bolsos de hombro, bandoleras y mochilas de piel vegana de alta calidad. Visítanos en Madrid o compra online con envío rápido de 24/48h.">
+    <meta name="keywords" content="bolsos de diseño, bolsos de hombro, bandoleras, mochilas urbanas, complementos mujer, deines madrid, deines bolsos, tienda de bolsos online, piel vegana">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph (Redes Sociales / SEM) -->
+    <meta property="og:title" content="DEINES | Bolsos y Complementos Premium">
+    <meta property="og:description" content="Diseños versátiles en colores únicos. Envío gratis en pedidos superiores a 80€.">
+    <meta property="og:image" content="assets/hero_bg.jpg">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👜</text></svg>">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- FontAwesome para Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- JSON-LD Datos Estructurados para SEO y Motores de Búsqueda IA (GEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "DEINES",
+      "image": "assets/hero_bg.jpg",
+      "@id": "https://deines-shop.example.com",
+      "url": "https://deines-shop.example.com",
+      "telephone": "+34620950151",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Augusto Figueroa 32",
+        "addressLocality": "Madrid",
+        "postalCode": "28004",
+        "addressCountry": "ES"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 40.422534,
+        "longitude": -3.698064
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday"
+        ],
+        "opens": "10:30",
+        "closes": "20:30"
+      },
+      "sameAs": [
+        "https://www.instagram.com/deines_bolsos"
+      ]
+    }
+    </script>
+    
+    <!-- FAQ Schema para GEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "¿Dónde está vuestra tienda física en Madrid?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nuestra boutique física se encuentra en el barrio de Chueca, en la calle Augusto Figueroa 32, 28004 Madrid. Abrimos de lunes a sábado de 10:30 a 20:30."
+        }
+      },{
+        "@type": "Question",
+        "name": "¿Cuáles son los plazos y costes de envío?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Los envíos son gratuitos en compras superiores a 80€. Para pedidos inferiores, el coste estándar es de 3,95€. Entregamos en 24/48 horas laborables en toda la península."
+        }
+      },{
+        "@type": "Question",
+        "name": "¿Cuál es vuestra política de devoluciones?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Dispones de 30 días naturales desde la fecha de recepción de tu pedido para realizar cualquier cambio o devolución de forma gratuita en nuestra tienda o gestionándolo online."
+        }
+      },{
+        "@type": "Question",
+        "name": "¿De qué materiales están fabricados los bolsos DEINES?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nuestros bolsos están confeccionados con cuero vegano de alta calidad y materiales sintéticos rigurosamente seleccionados para ofrecer una gran resistencia, suavidad al tacto y durabilidad diaria con un menor impacto ambiental."
+        }
+      }]
+    }
+    </script>
+</head>
+<body>
+
+    <!-- Barra de Anuncios Superior -->
+    <div class="announcement-bar" id="announcement-bar">
+        ✨ Envíos gratis en pedidos superiores a 80€ en toda España ✨
+    </div>
+
+    <!-- Cabecera de Navegación -->
+    <header class="header-main" id="header-main">
+        <div class="container header-container">
+            <!-- Hamburger para Móvil -->
+            <button class="hamburger" id="hamburger-menu" aria-label="Menú de navegación">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Logotipo de la Marca -->
+            <a href="#" class="logo-container" id="brand-logo">
+                <span class="logo-main">DEINES</span>
+                <span class="logo-sub">Moda y complementos</span>
+            </a>
+            
+            <!-- Menú Escritorio -->
+            <nav class="nav-desktop" aria-label="Navegación principal">
+                <a href="#" class="nav-link active" data-category="todos">Inicio</a>
+                <a href="#novedades" class="nav-link" data-category="bolsos">Bolsos</a>
+                <a href="#novedades" class="nav-link" data-category="novedades">Novedades</a>
+                <a href="#mas-vendidos" class="nav-link" data-category="mochilas">Mochilas</a>
+                <a href="#newsletter" class="nav-link" data-category="sale">Sale</a>
+            </nav>
+            
+            <!-- Acciones Rápidas (Iconos) -->
+            <div class="header-actions">
+                <!-- Barra de búsqueda rápida -->
+                <div class="search-wrapper" style="position: relative;">
+                    <button class="action-btn" id="btn-search-trigger" aria-label="Buscar productos">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <input type="text" id="search-input" placeholder="Buscar bolsos..." style="position: absolute; right: 40px; top: 50%; transform: translateY(-50%); border: 1px solid var(--color-border); border-radius: 15px; padding: 4px 10px; font-size: 12px; width: 0; opacity: 0; transition: var(--transition-smooth); background: white; z-index: 10;">
+                </div>
+                
+                <button class="action-btn" id="btn-account" aria-label="Mi Cuenta">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <button class="action-btn" id="btn-cart-trigger" aria-label="Ver Carrito">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-count-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main>
+        
+        <!-- Sección Hero (Presentación Principal) -->
+        <section class="hero-section" id="hero">
+            <div class="container">
+                <div class="hero-card">
+                    <!-- Contenido dinámico para SEO e IA -->
+                    <div class="hero-left">
+                        <h1 class="hero-logo">DEINES</h1>
+                        <span class="hero-subtitle">Moda y complementos</span>
+                        
+                        <div class="hero-contact">
+                            <a href="tel:+34620950151" class="contact-item">
+                                <i class="fa-solid fa-phone"></i>
+                                <span>(34) 620 95 01 51</span>
+                            </a>
+                            <a href="https://maps.google.com/?q=Augusto+Figueroa+32+Madrid" target="_blank" class="contact-item">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>Augusto Figueroa 32, 28004 Madrid</span>
+                            </a>
+                        </div>
+                        
+                        <a href="#novedades" class="hero-cta">Ver Colección</a>
+                    </div>
+                    
+                    <!-- Imagen de cabecera original -->
+                    <div class="hero-right">
+                        <div class="hero-image-wrapper">
+                            <img src="assets/hero_bg.jpg" alt="Colección de bolsos premium DEINES en colores lila, menta y coral en pedestal" class="hero-right-img" width="700" height="520">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Barra de Compromisos / Confianza -->
+        <section class="trust-badges" aria-label="Compromisos de servicio">
+            <div class="container badges-grid">
+                <div class="badge-item">
+                    <div class="badge-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="badge-content">
+                        <h4>Envíos rápidos</h4>
+                        <p>24/48h en península</p>
+                    </div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                    <div class="badge-content">
+                        <h4>Devoluciones</h4>
+                        <p>30 días para cambios</p>
+                    </div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="badge-content">
+                        <h4>Pago seguro</h4>
+                        <p>Compra 100% segura</p>
+                    </div>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon"><i class="fa-solid fa-headset"></i></div>
+                    <div class="badge-content">
+                        <h4>Atención personalizada</h4>
+                        <p>Te ayudamos en todo</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Colecciones Circulares -->
+        <section class="collections-section" aria-label="Colecciones de temporada">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">Descubre Nuestras Colecciones</h2>
+                    <p class="section-subtitle">Diseños exclusivos adaptados a tu ritmo de vida</p>
+                </div>
+                
+                <div class="collections-slider">
+                    <a href="#novedades" class="collection-card" data-filter="hombro">
+                        <div class="collection-img-circle">
+                            <img src="assets/bolso_beige.png" alt="Categoría Bolsos de hombro" width="110" height="110">
+                        </div>
+                        <h3>Bolsos de Hombro</h3>
+                        <span>Ver más</span>
+                    </a>
+                    <a href="#novedades" class="collection-card" data-filter="bandolera">
+                        <div class="collection-img-circle">
+                            <img src="assets/bolso_menta.png" alt="Categoría Bandoleras" width="110" height="110">
+                        </div>
+                        <h3>Bandoleras</h3>
+                        <span>Ver más</span>
+                    </a>
+                    <a href="#novedades" class="collection-card" data-filter="mochila">
+                        <div class="collection-img-circle">
+                            <img src="assets/mochila_menta.png" alt="Categoría Mochilas" width="110" height="110">
+                        </div>
+                        <h3>Mochilas</h3>
+                        <span>Ver más</span>
+                    </a>
+                    <a href="#novedades" class="collection-card" data-filter="mano">
+                        <div class="collection-img-circle">
+                            <img src="assets/bolso_marino.png" alt="Categoría Bolsos de mano" width="110" height="110">
+                        </div>
+                        <h3>Bolsos de Mano</h3>
+                        <span>Ver más</span>
+                    </a>
+                    <a href="#novedades" class="collection-card" data-filter="novedades">
+                        <div class="collection-img-circle">
+                            <img src="assets/bolso_coral.png" alt="Categoría Novedades" width="110" height="110">
+                        </div>
+                        <h3>Novedades</h3>
+                        <span>Ver más</span>
+                    </a>
+                    <a href="#novedades" class="collection-card" data-filter="sale">
+                        <div class="collection-img-circle">
+                            <img src="assets/bolso_camel.png" alt="Categoría Rebajas" width="110" height="110">
+                        </div>
+                        <h3>Sale</h3>
+                        <span>Ver más</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Novedades -->
+        <section class="products-section" id="novedades">
+            <div class="container">
+                <div class="section-header-row">
+                    <div class="section-title-wrapper">
+                        <h2 class="section-title">Novedades</h2>
+                        <p class="section-subtitle">Lo último en tendencia y diseño de accesorios</p>
+                    </div>
+                    <a href="#" class="view-all-link">Ver todo <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="products-grid" id="grid-novedades">
+                    <!-- Cargados dinámicamente desde app.js para consistencia e indexabilidad -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Banner de Nueva Campaña -->
+        <section class="campaign-banner" aria-label="Campaña temporada">
+            <div class="container">
+                <div class="campaign-card">
+                    <div class="campaign-left">
+                        <img src="assets/instagram_2.png" alt="Mujer paseando con bolso bandolera color lila de DEINES" class="campaign-img" width="600" height="420">
+                    </div>
+                    <div class="campaign-right">
+                        <span class="campaign-tag">Nueva Colección</span>
+                        <h2 class="campaign-title">Colores que te acompañan</h2>
+                        <p class="campaign-text">Diseños versátiles para cada momento del día. Confeccionados pensando en tu comodidad y en elevar tu estilo diario.</p>
+                        <a href="#novedades" class="campaign-btn">Descubrir</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Más Vendidos -->
+        <section class="products-section" id="mas-vendidos">
+            <div class="container">
+                <div class="section-header-row">
+                    <div class="section-title-wrapper">
+                        <h2 class="section-title">Más Vendidos</h2>
+                        <p class="section-subtitle">Los favoritos indiscutibles de nuestras clientas</p>
+                    </div>
+                    <a href="#" class="view-all-link">Ver todo <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="products-grid" id="grid-mas-vendidos">
+                    <!-- Cargados dinámicamente desde app.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Valores de Marca y Showroom Físico -->
+        <section class="values-section" aria-label="Nuestros Valores">
+            <div class="container">
+                <div class="values-grid">
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fa-regular fa-compass"></i></div>
+                        <h3>Diseño</h3>
+                        <p>Colecciones propias con estilo, personalidad y atención estricta al detalle.</p>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fa-regular fa-star"></i></div>
+                        <h3>Calidad</h3>
+                        <p>Materiales seleccionados y costuras reforzadas para durar en tu día a día.</p>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fa-regular fa-heart"></i></div>
+                        <h3>Atención</h3>
+                        <p>Te asesoramos siempre que lo necesites para encontrar tu bolso perfecto.</p>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon"><i class="fa-regular fa-building"></i></div>
+                        <h3>Tienda Física</h3>
+                        <p>Visítanos y siente los materiales en Augusto Figueroa 32, Madrid.</p>
+                    </div>
+                    
+                    <!-- Imagen interior de la boutique -->
+                    <div class="boutique-showcase">
+                        <img src="assets/boutique_interior.png" alt="Interior moderno y elegante de la boutique de bolsos DEINES en Madrid" class="boutique-img" width="1200" height="380">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Preguntas Frecuentes (FAQ - Clave para SEO de IA) -->
+        <section class="products-section" id="faq" style="background-color: var(--color-bg-white);">
+            <div class="container" style="max-width: 800px;">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">Preguntas Frecuentes</h2>
+                    <p class="section-subtitle">Todo lo que necesitas saber antes de comprar</p>
+                </div>
+                
+                <div class="faq-accordion" style="display: flex; flex-direction: column; gap: 16px; margin-top: 30px;">
+                    <!-- FAQ 1 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; background: var(--color-bg-base);">
+                        <button class="faq-question" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 20px; text-align: left; font-size: 15px; font-weight: 600; color: var(--color-text-dark);">
+                            <span>¿Dónde está vuestra tienda física en Madrid?</span>
+                            <i class="fa-solid fa-plus" style="color: var(--color-brand-primary); transition: transform 0.3s;"></i>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 20px;">
+                            <p style="padding-bottom: 20px; font-size: 14px; color: var(--color-text-muted); line-height: 1.6;">Nuestra boutique física está situada en la famosa zona de tiendas de bolsos de Chueca, concretamente en la <strong>Calle Augusto Figueroa 32, 28004 Madrid</strong>. Te invitamos a visitarnos para conocer de primera mano todos nuestros productos.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ 2 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; background: var(--color-bg-base);">
+                        <button class="faq-question" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 20px; text-align: left; font-size: 15px; font-weight: 600; color: var(--color-text-dark);">
+                            <span>¿Cuánto tardan los envíos online?</span>
+                            <i class="fa-solid fa-plus" style="color: var(--color-brand-primary); transition: transform 0.3s;"></i>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 20px;">
+                            <p style="padding-bottom: 20px; font-size: 14px; color: var(--color-text-muted); line-height: 1.6;">Los pedidos se procesan de inmediato y se entregan en un plazo de <strong>24 a 48 horas laborables</strong> en la península. Los pedidos realizados antes de las 14:00 suelen entregarse al día siguiente.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; background: var(--color-bg-base);">
+                        <button class="faq-question" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 20px; text-align: left; font-size: 15px; font-weight: 600; color: var(--color-text-dark);">
+                            <span>¿Cómo realizo una devolución y cuál es el coste?</span>
+                            <i class="fa-solid fa-plus" style="color: var(--color-brand-primary); transition: transform 0.3s;"></i>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 20px;">
+                            <p style="padding-bottom: 20px; font-size: 14px; color: var(--color-text-muted); line-height: 1.6;">Ofrecemos <strong>30 días naturales</strong> para cambios y devoluciones. Si te encuentras en Madrid, puedes gestionarlo gratis en tienda. Si prefieres hacerlo de forma online, solicítalo a nuestro soporte y enviaremos un transportista a tu domicilio. El primer cambio online es gratuito.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="faq-item" style="border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; background: var(--color-bg-base);">
+                        <button class="faq-question" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 20px; text-align: left; font-size: 15px; font-weight: 600; color: var(--color-text-dark);">
+                            <span>¿Son vuestros materiales respetuosos con el medio ambiente?</span>
+                            <i class="fa-solid fa-plus" style="color: var(--color-brand-primary); transition: transform 0.3s;"></i>
+                        </button>
+                        <div class="faq-answer" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 20px;">
+                            <p style="padding-bottom: 20px; font-size: 14px; color: var(--color-text-muted); line-height: 1.6;">Sí, en DEINES estamos comprometidos con una moda más consciente. Utilizamos <strong>cuero vegano sintético de poliuretano (PU) de grado premium</strong>, libre de crueldad animal y con un proceso de fabricación que minimiza los residuos y el consumo de agua comparado con la piel tradicional.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Boletín de Suscripción (Newsletter) -->
+        <section class="newsletter-section" id="newsletter">
+            <div class="container newsletter-container">
+                <h2 class="newsletter-title">Suscríbete a Nuestra Newsletter</h2>
+                <p class="newsletter-subtitle">Novedades, lanzamientos y promociones exclusivas directamente en tu email.</p>
+                
+                <form class="newsletter-form" id="form-newsletter">
+                    <input type="email" class="newsletter-input" id="newsletter-email" placeholder="Escribe tu email aquí" required aria-label="Correo electrónico">
+                    <button type="submit" class="newsletter-btn">Suscribirme</button>
+                </form>
+                <div class="newsletter-feedback" id="newsletter-feedback"></div>
+            </div>
+        </section>
+
+        <!-- Galería de Instagram -->
+        <section class="instagram-section" aria-label="Galería de Instagram">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <h2 class="section-title">Síguenos en Instagram</h2>
+                    <div class="instagram-handle-row">
+                        <a href="https://www.instagram.com/deines_bolsos" target="_blank" class="instagram-handle">
+                            <i class="fa-brands fa-instagram"></i> @deines_bolsos
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="instagram-grid">
+                    <div class="instagram-item">
+                        <img src="assets/instagram_1.png" alt="Instagram Post 1" width="220" height="220">
+                        <a href="#" class="instagram-overlay"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-item">
+                        <img src="assets/instagram_2.png" alt="Instagram Post 2" width="220" height="220">
+                        <a href="#" class="instagram-overlay"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-item">
+                        <img src="assets/instagram_3.png" alt="Instagram Post 3" width="220" height="220">
+                        <a href="#" class="instagram-overlay"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-item">
+                        <img src="assets/instagram_4.png" alt="Instagram Post 4" width="220" height="220">
+                        <a href="#" class="instagram-overlay"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                    <div class="instagram-item">
+                        <img src="assets/instagram_5.png" alt="Instagram Post 5" width="220" height="220">
+                        <a href="#" class="instagram-overlay"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pie de Página (Footer) -->
+    <footer class="footer-main">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <span class="logo-main">DEINES</span>
+                <p class="logo-sub" style="margin-top: 0;">Moda y complementos</p>
+                <p class="footer-brand-desc">Tienda de bolsos y complementos con diseños propios, calidad garantizada y atención 100% personalizada.</p>
+                <div class="social-links">
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/deines_bolsos" target="_blank" class="social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#" class="social-btn" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Comprar</h3>
+                <ul>
+                    <li><a href="#novedades" data-filter="hombro">Bolsos</a></li>
+                    <li><a href="#novedades" data-filter="novedades">Novedades</a></li>
+                    <li><a href="#mas-vendidos" data-filter="mochilas">Complementos</a></li>
+                    <li><a href="#novedades" data-filter="sale">Sale</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Ayuda</h3>
+                <ul>
+                    <li><a href="#faq">Envíos</a></li>
+                    <li><a href="#faq">Devoluciones</a></li>
+                    <li><a href="#faq">Preguntas Frecuentes</a></li>
+                    <li><a href="tel:+34620950151">Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Información</h3>
+                <ul>
+                    <li><a href="#faq">Sobre nosotros</a></li>
+                    <li><a href="#">Tienda física</a></li>
+                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Tienda Física</h3>
+                <div class="footer-contact-info">
+                    <p><i class="fa-solid fa-location-dot" style="color: var(--color-brand-primary); margin-right: 8px;"></i> Augusto Figueroa 32,<br>28004 Madrid</p>
+                    <p><i class="fa-solid fa-phone" style="color: var(--color-brand-primary); margin-right: 8px;"></i> +34 620 95 01 51</p>
+                    <p><i class="fa-regular fa-clock" style="color: var(--color-brand-primary); margin-right: 8px;"></i> Lun - Sáb: 10:30 - 20:30</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container footer-bottom">
+            <p>&copy; 2026 DEINES - Todos los derechos reservados.</p>
+            <div class="payment-methods" aria-label="Métodos de pago aceptados">
+                <i class="fa-brands fa-cc-visa" style="color: #1A1F71;"></i>
+                <i class="fa-brands fa-cc-mastercard" style="color: #EB001B;"></i>
+                <i class="fa-brands fa-cc-apple-pay" style="color: #000000;"></i>
+                <i class="fa-brands fa-cc-paypal" style="color: #003087;"></i>
+                <i class="fa-brands fa-cc-stripe" style="color: #635BFF;"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CAPA OSCURECEDORA DE FONDO -->
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+
+    <!-- CARRITO LATERAL SLIDE-OUT -->
+    <aside class="cart-sidebar" id="cart-sidebar" aria-label="Carrito de compras">
+        <div class="cart-header">
+            <h2>Mi Carrito</h2>
+            <button class="btn-close-cart" id="btn-close-cart" aria-label="Cerrar Carrito">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <!-- Barra de envío gratis dinámica -->
+        <div class="shipping-promo-bar">
+            <div class="shipping-promo-text" id="shipping-promo-text">
+                ¡Añade <strong>80,00 €</strong> más para conseguir envío gratis!
+            </div>
+            <div class="shipping-progress-bg">
+                <div class="shipping-progress-fill" id="shipping-progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Lista de Productos en el Carrito -->
+        <div class="cart-items-list" id="cart-items-list">
+            <!-- Si el carrito está vacío -->
+            <div class="cart-empty-message" id="cart-empty-message">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <p>Tu carrito está vacío</p>
+                <a href="#novedades" class="campaign-btn" style="padding: 10px 24px; font-size: 11px;" id="btn-cart-continue">Empezar a comprar</a>
+            </div>
+        </div>
+        
+        <!-- Footer del Carrito con Totales -->
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total-row">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">0,00 €</span>
+            </div>
+            <div class="cart-tax-notice">
+                Envío gratuito aplicable según el subtotal. Tasas e impuestos incluidos.
+            </div>
+            <button class="btn-checkout" id="btn-checkout">Proceder al pago</button>
+        </div>
+    </aside>
+
+    <!-- MODAL VISTA RÁPIDA (QUICK VIEW) -->
+    <div class="quick-view-modal" id="quick-view-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="btn-close-modal" id="btn-close-modal" aria-label="Cerrar modal">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="modal-grid">
+            <div class="modal-media">
+                <img src="" alt="" id="modal-product-img">
+            </div>
+            <div class="modal-content">
+                <div class="product-meta-cat" id="modal-product-cat">Bolsos</div>
+                <h2 class="modal-title" id="modal-product-title">Nombre del Bolso</h2>
+                <div class="modal-price-row">
+                    <span class="modal-price" id="modal-product-price">0,00 €</span>
+                </div>
+                <p class="modal-desc" id="modal-product-desc">Descripción detallada del bolso.</p>
+                
+                <div class="modal-option-title">Color Seleccionado</div>
+                <div class="modal-colors-row">
+                    <div class="modal-color-dots" id="modal-product-colors">
+                        <!-- Cargados dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="modal-qty-add-row">
+                    <div class="qty-selector">
+                        <button class="qty-btn" id="modal-qty-minus"><i class="fa-solid fa-minus"></i></button>
+                        <span class="qty-val" id="modal-qty-val">1</span>
+                        <button class="qty-btn" id="modal-qty-plus"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <button class="btn-modal-add-cart" id="btn-modal-add-cart">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE TOAST NOTIFICATIONS -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- JavaScript Principal -->
+    <script src="app.js"></script>
+</body>
+</html>
