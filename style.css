@@ -362,16 +362,18 @@ ul {
 
 /* Corte ondulado estético usando clip-path en pantallas grandes */
 .hero-right-img {
-    width: 100%;
+    width: 185%;
+    max-width: none;
     height: 100%;
     object-fit: cover;
-    object-position: right center;
+    margin-left: -85%;
     transition: transform 6s ease;
 }
 
 .hero-card:hover .hero-right-img {
     transform: scale(1.05);
 }
+
 
 /* ==========================================================================
    BADGES DE CONFIANZA
