@@ -691,52 +691,59 @@ function initEvents() {
     // Simulación de Checkout
     const btnCheckout = document.getElementById('btn-checkout');
     btnCheckout.addEventListener('click', () => {
-        const numPedido = Math.floor(Math.random() * 900000) + 100000;
+        let subtotal = carrito.reduce((acc, curr) => acc + curr.price * curr.qty, 0);
+        let shipping = subtotal >= 80 ? 0 : 3.95;
+        let total = subtotal + shipping;
         
-        // Crear un modal de éxito visual premium
-        const checkoutModal = document.createElement('div');
-        checkoutModal.style.position = 'fixed';
-        checkoutModal.style.top = '50%';
-        checkoutModal.style.left = '50%';
-        checkoutModal.style.transform = 'translate(-50%, -50%)';
-        checkoutModal.style.backgroundColor = 'var(--color-bg-white)';
-        checkoutModal.style.padding = '40px';
-        checkoutModal.style.borderRadius = '24px';
-        checkoutModal.style.boxShadow = 'var(--shadow-modal)';
-        checkoutModal.style.zIndex = '2000';
-        checkoutModal.style.textAlign = 'center';
-        checkoutModal.style.maxWidth = '400px';
-        checkoutModal.style.width = '90%';
-        checkoutModal.style.animation = 'slideUp 0.4s ease forwards';
-        
-        checkoutModal.innerHTML = `
-            <div style="font-size: 50px; color: var(--color-brand-secondary); margin-bottom: 20px;">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
-            <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
-            <button id="btn-close-checkout-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
-        `;
-        
-        document.body.appendChild(checkoutModal);
-        closeCartSidebar();
-        
-        // Oscurecer fondo con máxima prioridad
-        modalBackdrop.style.zIndex = '1999';
-        modalBackdrop.classList.add('active');
-        
-        document.getElementById('btn-close-checkout-success').addEventListener('click', () => {
-            checkoutModal.remove();
-            modalBackdrop.classList.remove('active');
-            modalBackdrop.style.zIndex = '';
-            document.body.style.overflow = '';
+        showPaymentModal(total, () => {
+            const numPedido = Math.floor(Math.random() * 900000) + 100000;
             
-            // Vaciar carrito
-            carrito = [];
-            updateCart();
-            saveCart();
+            // Crear un modal de éxito visual premium
+            const checkoutModal = document.createElement('div');
+            checkoutModal.style.position = 'fixed';
+            checkoutModal.style.top = '50%';
+            checkoutModal.style.left = '50%';
+            checkoutModal.style.transform = 'translate(-50%, -50%)';
+            checkoutModal.style.backgroundColor = 'var(--color-bg-white)';
+            checkoutModal.style.padding = '40px';
+            checkoutModal.style.borderRadius = '24px';
+            checkoutModal.style.boxShadow = 'var(--shadow-modal)';
+            checkoutModal.style.zIndex = '2000';
+            checkoutModal.style.textAlign = 'center';
+            checkoutModal.style.maxWidth = '400px';
+            checkoutModal.style.width = '90%';
+            checkoutModal.style.animation = 'slideUp 0.4s ease forwards';
+            
+            checkoutModal.innerHTML = `
+                <div style="font-size: 50px; color: var(--color-brand-secondary); margin-bottom: 20px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
+                <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
+                <button id="btn-close-checkout-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
+            `;
+            
+            document.body.appendChild(checkoutModal);
+            closeCartSidebar();
+            
+            // Oscurecer fondo con máxima prioridad
+            modalBackdrop.style.zIndex = '1999';
+            modalBackdrop.classList.add('active');
+            
+            document.getElementById('btn-close-checkout-success').addEventListener('click', () => {
+                checkoutModal.remove();
+                modalBackdrop.classList.remove('active');
+                modalBackdrop.style.zIndex = '';
+                document.body.style.overflow = '';
+                
+                // Vaciar carrito
+                carrito = [];
+                updateCart();
+                saveCart();
+            });
         });
     });
+
     
     // Suscripción Newsletter
     formNewsletter.addEventListener('submit', (e) => {
@@ -837,54 +844,62 @@ function initCartPage() {
     const btnCartPageCheckout = document.getElementById('btn-cart-page-checkout');
     if (btnCartPageCheckout) {
         btnCartPageCheckout.addEventListener('click', () => {
-            const numPedido = Math.floor(Math.random() * 900000) + 100000;
+            let subtotal = carrito.reduce((acc, curr) => acc + curr.price * curr.qty, 0);
+            let shipping = subtotal >= 80 ? 0 : 3.95;
+            let discount = subtotal * descuentoAplicado;
+            let total = subtotal + shipping - discount;
             
-            // Crear el modal de éxito
-            const checkoutModal = document.createElement('div');
-            checkoutModal.style.position = 'fixed';
-            checkoutModal.style.top = '50%';
-            checkoutModal.style.left = '50%';
-            checkoutModal.style.transform = 'translate(-50%, -50%)';
-            checkoutModal.style.backgroundColor = 'var(--color-bg-white)';
-            checkoutModal.style.padding = '40px';
-            checkoutModal.style.borderRadius = '24px';
-            checkoutModal.style.boxShadow = 'var(--shadow-modal)';
-            checkoutModal.style.zIndex = '2000';
-            checkoutModal.style.textAlign = 'center';
-            checkoutModal.style.maxWidth = '400px';
-            checkoutModal.style.width = '90%';
-            checkoutModal.style.animation = 'slideUp 0.4s ease forwards';
-            
-            checkoutModal.innerHTML = `
-                <div style="font-size: 50px; color: var(--color-brand-secondary); margin-bottom: 20px;">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-                <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
-                <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
-                <button id="btn-close-cart-page-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
-            `;
-            
-            document.body.appendChild(checkoutModal);
-            modalBackdrop.style.zIndex = '1999';
-            modalBackdrop.classList.add('active');
-            
-            document.getElementById('btn-close-cart-page-success').addEventListener('click', () => {
-                checkoutModal.remove();
-                modalBackdrop.classList.remove('active');
-                modalBackdrop.style.zIndex = '';
+            showPaymentModal(total, () => {
+                const numPedido = Math.floor(Math.random() * 900000) + 100000;
                 
-                // Vaciar carrito
-                carrito = [];
-                descuentoAplicado = 0;
-                localStorage.removeItem('deines_discount');
-                saveCart();
-                updateCart();
+                // Crear el modal de éxito
+                const checkoutModal = document.createElement('div');
+                checkoutModal.style.position = 'fixed';
+                checkoutModal.style.top = '50%';
+                checkoutModal.style.left = '50%';
+                checkoutModal.style.transform = 'translate(-50%, -50%)';
+                checkoutModal.style.backgroundColor = 'var(--color-bg-white)';
+                checkoutModal.style.padding = '40px';
+                checkoutModal.style.borderRadius = '24px';
+                checkoutModal.style.boxShadow = 'var(--shadow-modal)';
+                checkoutModal.style.zIndex = '2000';
+                checkoutModal.style.textAlign = 'center';
+                checkoutModal.style.maxWidth = '400px';
+                checkoutModal.style.width = '90%';
+                checkoutModal.style.animation = 'slideUp 0.4s ease forwards';
                 
-                // Redirigir a inicio
-                window.location.href = "index.html";
+                checkoutModal.innerHTML = `
+                    <div style="font-size: 50px; color: var(--color-brand-secondary); margin-bottom: 20px;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
+                    <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
+                    <button id="btn-close-cart-page-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
+                `;
+                
+                document.body.appendChild(checkoutModal);
+                modalBackdrop.style.zIndex = '1999';
+                modalBackdrop.classList.add('active');
+                
+                document.getElementById('btn-close-cart-page-success').addEventListener('click', () => {
+                    checkoutModal.remove();
+                    modalBackdrop.classList.remove('active');
+                    modalBackdrop.style.zIndex = '';
+                    
+                    // Vaciar carrito
+                    carrito = [];
+                    descuentoAplicado = 0;
+                    localStorage.removeItem('deines_discount');
+                    saveCart();
+                    updateCart();
+                    
+                    // Redirigir a inicio
+                    window.location.href = "index.html";
+                });
             });
         });
     }
+
 }
 
 function updateCartPage() {
@@ -1011,4 +1026,290 @@ function attachCartPageEvents() {
         });
     });
 }
+
+// --- MÓDULO DE PAGO SEGURO DINÁMICO (CARD, GOOGLE & APPLE PAY) ---
+function showPaymentModal(amount, callbackSuccess) {
+    // 1. Inyectar HTML del Modal de Pago si no existe
+    let payModal = document.getElementById('payment-modal');
+    if (!payModal) {
+        payModal = document.createElement('div');
+        payModal.id = 'payment-modal';
+        payModal.className = 'payment-modal';
+        document.body.appendChild(payModal);
+    }
+    
+    // Inyectar HTML de las hojas nativas si no existen
+    let applePaySheet = document.getElementById('apple-pay-sheet');
+    if (!applePaySheet) {
+        applePaySheet = document.createElement('div');
+        applePaySheet.id = 'apple-pay-sheet';
+        applePaySheet.className = 'native-payment-sheet';
+        document.body.appendChild(applePaySheet);
+    }
+    
+    let googlePaySheet = document.getElementById('google-pay-sheet');
+    if (!googlePaySheet) {
+        googlePaySheet = document.createElement('div');
+        googlePaySheet.id = 'google-pay-sheet';
+        googlePaySheet.className = 'native-payment-sheet';
+        document.body.appendChild(googlePaySheet);
+    }
+    
+    const orderId = Math.floor(Math.random() * 900000) + 100000;
+    
+    // Rellenar contenido del modal principal
+    payModal.innerHTML = `
+        <button class="btn-close-payment" id="btn-close-payment" aria-label="Cancelar pago">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="payment-modal-header">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>Pasarela de Pago Seguro</h3>
+            <span class="order-id-label">Pedido #DE-${orderId}</span>
+        </div>
+        <div class="payment-amount-banner">
+            <span>Total a pagar (IVA incl.):</span>
+            <strong>${amount.toFixed(2)} €</strong>
+        </div>
+        
+        <!-- Express Checkout -->
+        <div class="express-checkout-section">
+            <span class="payment-label">Express Checkout</span>
+            <div class="express-buttons">
+                <button class="btn-express btn-apple-pay" id="btn-apple-pay-btn">
+                    <i class="fa-brands fa-apple"></i> Pay
+                </button>
+                <button class="btn-express btn-google-pay" id="btn-google-pay-btn">
+                    <i class="fa-brands fa-google-pay" style="font-size:38px;"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="payment-divider"><span>o pagar con tarjeta de crédito</span></div>
+        
+        <!-- Card Form -->
+        <form class="card-payment-form" id="card-payment-form">
+            <div class="form-group">
+                <label for="card-name">Titular de la tarjeta</label>
+                <input type="text" id="card-name" placeholder="María García" required autocomplete="cc-name">
+            </div>
+            <div class="form-group">
+                <label for="card-number">Número de tarjeta</label>
+                <div style="position:relative; display:flex; align-items:center;">
+                    <input type="text" id="card-number" placeholder="4000 1234 5678 9010" maxlength="19" required style="width:100%; padding-right:40px;" autocomplete="cc-number">
+                    <i class="fa-solid fa-credit-card" id="card-brand-icon" style="position:absolute; right:12px; color:var(--color-text-muted); font-size:18px;"></i>
+                </div>
+            </div>
+            <div class="form-row-double">
+                <div class="form-group">
+                    <label for="card-expiry">Expiración</label>
+                    <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" required autocomplete="cc-exp">
+                </div>
+                <div class="form-group">
+                    <label for="card-cvv">CVV</label>
+                    <input type="text" id="card-cvv" placeholder="123" maxlength="4" required autocomplete="cc-csc">
+                </div>
+            </div>
+            <button type="submit" class="btn-pay-submit">
+                <i class="fa-solid fa-lock"></i> Pagar seguro ${amount.toFixed(2)} €
+            </button>
+        </form>
+    `;
+    
+    // Rellenar contenido de la hoja de Apple Pay
+    applePaySheet.innerHTML = `
+        <div class="sheet-header">
+            <h4><i class="fa-brands fa-apple" style="font-size:20px;"></i> Apple Pay</h4>
+            <button class="btn-close-payment" id="btn-close-apple-sheet"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sheet-info-row">
+            <span class="label">Comercio</span>
+            <span class="val">DEINES COMPLEMENTOS SL</span>
+        </div>
+        <div class="sheet-info-row">
+            <span class="label">Tarjeta</span>
+            <span class="val">Visa personal (•••• 4920)</span>
+        </div>
+        <div class="sheet-info-row">
+            <span class="label">Envío</span>
+            <span class="val">Augusto Figueroa 32, Madrid (24/48h)</span>
+        </div>
+        <div class="sheet-info-row" style="border-top:1px solid #e0e0e0; padding-top:10px; margin-top:10px;">
+            <span class="label" style="font-weight:700;">TOTAL</span>
+            <span class="val" style="font-size:18px; font-weight:800;">${amount.toFixed(2)} €</span>
+        </div>
+        <button class="sheet-confirm-btn" id="btn-confirm-apple">
+            <i class="fa-solid fa-fingerprint"></i> Confirmar con Touch ID
+        </button>
+    `;
+    
+    // Rellenar contenido de la hoja de Google Pay
+    googlePaySheet.innerHTML = `
+        <div class="sheet-header">
+            <h4><i class="fa-brands fa-google-pay" style="font-size:36px; vertical-align:middle;"></i></h4>
+            <button class="btn-close-payment" id="btn-close-google-sheet"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sheet-info-row">
+            <span class="label">Cuenta de Google</span>
+            <span class="val">usuario.deines@gmail.com</span>
+        </div>
+        <div class="sheet-info-row">
+            <span class="label">Método de pago</span>
+            <span class="val">Mastercard •••• 1024</span>
+        </div>
+        <div class="sheet-info-row" style="border-top:1px solid #e0e0e0; padding-top:10px; margin-top:10px;">
+            <span class="label" style="font-weight:700;">Total a pagar</span>
+            <span class="val" style="font-size:18px; font-weight:800;">${amount.toFixed(2)} €</span>
+        </div>
+        <button class="sheet-confirm-btn" id="btn-confirm-google" style="background-color:#1a73e8;">
+            <i class="fa-solid fa-shield-halved"></i> Pagar con Google Pay
+        </button>
+    `;
+    
+    // Abrir Modal
+    payModal.classList.add('active');
+    modalBackdrop.style.zIndex = '2040';
+    modalBackdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // --- BINDING DE COMPORTAMIENTO ---
+    
+    // Cierre
+    const closeBtn = document.getElementById('btn-close-payment');
+    closeBtn.addEventListener('click', closeAllPaymentModals);
+    
+    // Cancelar en las hojas
+    document.getElementById('btn-close-apple-sheet').addEventListener('click', () => {
+        applePaySheet.classList.remove('active');
+    });
+    document.getElementById('btn-close-google-sheet').addEventListener('click', () => {
+        googlePaySheet.classList.remove('active');
+    });
+    
+    // Formatear Número de Tarjeta e Icono de Marca
+    const inputCardNumber = document.getElementById('card-number');
+    const brandIcon = document.getElementById('card-brand-icon');
+    
+    inputCardNumber.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        // Limitar a 16 dígitos
+        value = value.substring(0, 16);
+        
+        // Detectar marca
+        if (value.startsWith('4')) {
+            brandIcon.className = 'fa-brands fa-cc-visa';
+            brandIcon.style.color = '#1A1F71'; // Color Visa
+        } else if (value.startsWith('5')) {
+            brandIcon.className = 'fa-brands fa-cc-mastercard';
+            brandIcon.style.color = '#EB001B'; // Color Mastercard
+        } else {
+            brandIcon.className = 'fa-solid fa-credit-card';
+            brandIcon.style.color = 'var(--color-text-muted)';
+        }
+        
+        // Formatear con espacios cada 4 dígitos
+        let formatted = value.match(/.{1,4}/g);
+        e.target.value = formatted ? formatted.join(' ') : '';
+    });
+    
+    // Formatear Fecha de Caducidad (MM/YY)
+    const inputExpiry = document.getElementById('card-expiry');
+    inputExpiry.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.substring(0, 4);
+        
+        if (value.length > 2) {
+            e.target.value = value.substring(0, 2) + '/' + value.substring(2);
+        } else {
+            e.target.value = value;
+        }
+    });
+    
+    // Formatear CVV
+    const inputCvv = document.getElementById('card-cvv');
+    inputCvv.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '').substring(0, 4);
+    });
+    
+    // Enviar Formulario de Tarjeta
+    const cardForm = document.getElementById('card-payment-form');
+    cardForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Mostrar animación de carga en el modal
+        payModal.innerHTML = `
+            <div class="payment-loading-state">
+                <div class="spinner"></div>
+                <div class="payment-loading-text" id="loading-step-text">Procesando pago seguro...</div>
+            </div>
+        `;
+        
+        const loadingText = document.getElementById('loading-step-text');
+        
+        // Simular fases de pasarela de pago
+        setTimeout(() => {
+            if (loadingText) loadingText.textContent = "Verificando saldo y tarjeta...";
+            setTimeout(() => {
+                if (loadingText) loadingText.textContent = "Autorizando transacción bancaria...";
+                setTimeout(() => {
+                    closeAllPaymentModals();
+                    callbackSuccess();
+                }, 1200);
+            }, 1200);
+        }, 1000);
+    });
+    
+    // Botón Express Apple Pay
+    document.getElementById('btn-apple-pay-btn').addEventListener('click', () => {
+        applePaySheet.classList.add('active');
+    });
+    
+    document.getElementById('btn-confirm-apple').addEventListener('click', () => {
+        const btnConfirm = document.getElementById('btn-confirm-apple');
+        btnConfirm.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Procesando Touch ID...`;
+        btnConfirm.style.backgroundColor = '#222';
+        
+        setTimeout(() => {
+            btnConfirm.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#2F855A;"></i> Pago Autorizado`;
+            btnConfirm.style.backgroundColor = '#fff';
+            btnConfirm.style.color = '#2F855A';
+            btnConfirm.style.border = '1px solid #2F855A';
+            
+            setTimeout(() => {
+                closeAllPaymentModals();
+                callbackSuccess();
+            }, 1000);
+        }, 1500);
+    });
+    
+    // Botón Express Google Pay
+    document.getElementById('btn-google-pay-btn').addEventListener('click', () => {
+        googlePaySheet.classList.add('active');
+    });
+    
+    document.getElementById('btn-confirm-google').addEventListener('click', () => {
+        const btnConfirm = document.getElementById('btn-confirm-google');
+        btnConfirm.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...`;
+        
+        setTimeout(() => {
+            btnConfirm.innerHTML = `<i class="fa-solid fa-circle-check"></i> Pago Autorizado`;
+            btnConfirm.style.backgroundColor = '#2F855A';
+            
+            setTimeout(() => {
+                closeAllPaymentModals();
+                callbackSuccess();
+            }, 1000);
+        }, 1500);
+    });
+    
+    function closeAllPaymentModals() {
+        payModal.classList.remove('active');
+        applePaySheet.classList.remove('active');
+        googlePaySheet.classList.remove('active');
+        modalBackdrop.classList.remove('active');
+        modalBackdrop.style.zIndex = '';
+        document.body.style.overflow = '';
+    }
+}
+
 
