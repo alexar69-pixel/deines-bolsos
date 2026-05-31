@@ -16,9 +16,11 @@ const PRODUCTOS = [
         colors: ["menta", "lila"],
         isNew: true,
         isSale: false,
+        customizable: true,
         desc: "Exquisito bolso bandolera de piel vegana en color verde menta. Presenta un diseño curvo sofisticado, herrajes de metal dorado de alta calidad y un compartimento principal espacioso para el uso diario.",
         specs: "Material: Cuero vegano sintético (PU) premium | Medidas: 22 x 15 x 6 cm | Correa ajustable: 110 cm"
     },
+
     {
         id: "bolso-hombro-camel",
         title: "Bolso de Hombro Camel",
@@ -42,9 +44,11 @@ const PRODUCTOS = [
         colors: ["coral", "camel"],
         isNew: true,
         isSale: false,
+        customizable: true,
         desc: "Bolso cruzado compacto de diseño rectangular en vibrante color coral apagado. Su cierre dorado a presión y su tamaño ideal lo convierten en un accesorio imprescindible para destacar con elegancia.",
         specs: "Material: Piel vegana estructurada | Medidas: 20 x 14 x 5.5 cm | Cadena decorativa desmontable"
     },
+
     {
         id: "bolso-mano-marino",
         title: "Bolso de Mano Marino",
@@ -83,9 +87,11 @@ const PRODUCTOS = [
         colors: ["beige", "camel"],
         isNew: false,
         isSale: false,
+        customizable: true,
         desc: "Soberbio bolso shopper estructurado en tono beige arena. Un accesorio atemporal de alta gama con un amplio compartimento interior dividido y herrajes metálicos reforzados.",
         specs: "Material: Cuero vegano granulado | Medidas: 35 x 26 x 14 cm | Incluye neceser interno desmontable"
     },
+
     {
         id: "bolso-bandolera-negro",
         title: "Bolso Bandolera Negro",
@@ -295,23 +301,30 @@ function attachProductEvents() {
 }
 
 // --- Carrito de Compras (Cart Logic) ---
-function addToCart(productId, qty = 1, color = 'único') {
+function addToCart(productId, qty = 1, color = 'único', customDetails = null) {
     const prod = PRODUCTOS.find(p => p.id === productId);
     if (!prod) return;
     
-    // Buscar si ya existe la combinación producto + color en el carrito
-    const itemExistente = carrito.find(item => item.id === productId && item.color === color);
+    // Buscar si ya existe la misma combinación (producto, color y personalización)
+    const itemExistente = carrito.find(item => 
+        item.id === productId && 
+        item.color === color && 
+        JSON.stringify(item.customDetails) === JSON.stringify(customDetails)
+    );
     
     if (itemExistente) {
         itemExistente.qty += qty;
     } else {
+        const finalPrice = prod.price + (customDetails ? customDetails.strapPrice : 0);
         carrito.push({
             id: prod.id,
             title: prod.title,
-            price: prod.price,
+            price: finalPrice,
+            basePrice: prod.price,
             image: prod.image,
             color: color,
-            qty: qty
+            qty: qty,
+            customDetails: customDetails
         });
     }
     
@@ -345,8 +358,16 @@ function updateCart() {
     let subtotal = 0;
     
     // Renderizar items
-    carrito.forEach(item => {
+    carrito.forEach((item, index) => {
         subtotal += item.price * item.qty;
+        
+        // Generar HTML de personalización si existe
+        const customDetailsHTML = item.customDetails ? `
+            <div class="cart-custom-details">
+                <span>Iniciales: <strong>${item.customDetails.initials || 'Ninguna'}</strong></span>
+                <span>Asa: <strong>${item.customDetails.strapName}</strong></span>
+            </div>
+        ` : '';
         
         const itemHTML = document.createElement('div');
         itemHTML.className = 'cart-item';
@@ -358,16 +379,17 @@ function updateCart() {
                 <div>
                     <h4 class="cart-item-title">${item.title}</h4>
                     <span class="cart-item-meta">Color: ${item.color.toUpperCase()}</span>
+                    ${customDetailsHTML}
                 </div>
                 <div class="cart-item-qty-row">
                     <div class="qty-selector">
-                        <button class="qty-btn btn-qty-minus" data-id="${item.id}" data-color="${item.color}"><i class="fa-solid fa-minus"></i></button>
+                        <button class="qty-btn btn-qty-minus" data-index="${index}"><i class="fa-solid fa-minus"></i></button>
                         <span class="qty-val">${item.qty}</span>
-                        <button class="qty-btn btn-qty-plus" data-id="${item.id}" data-color="${item.color}"><i class="fa-solid fa-plus"></i></button>
+                        <button class="qty-btn btn-qty-plus" data-index="${index}"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <span class="cart-item-price">${(item.price * item.qty).toFixed(2)} €</span>
                 </div>
-                <button class="btn-remove-cart-item" data-id="${item.id}" data-color="${item.color}">Eliminar</button>
+                <button class="btn-remove-cart-item" data-index="${index}">Eliminar</button>
             </div>
         `;
         cartItemsList.appendChild(itemHTML);
@@ -395,46 +417,42 @@ function updateShippingPromo(subtotal) {
 }
 
 function attachCartItemsEvents() {
-    // Botones de Incrementar
+    // Botones de Incrementar usando el índice del array
     document.querySelectorAll('.btn-qty-plus').forEach(btn => {
         btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const color = btn.getAttribute('data-color');
-            const item = carrito.find(item => item.id === id && item.color === color);
-            if (item) {
-                item.qty++;
+            const index = parseInt(btn.getAttribute('data-index'));
+            if (carrito[index]) {
+                carrito[index].qty++;
                 updateCart();
                 saveCart();
             }
         });
     });
     
-    // Botones de Decrementar
+    // Botones de Decrementar usando el índice del array
     document.querySelectorAll('.btn-qty-minus').forEach(btn => {
         btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const color = btn.getAttribute('data-color');
-            const item = carrito.find(item => item.id === id && item.color === color);
-            if (item && item.qty > 1) {
-                item.qty--;
+            const index = parseInt(btn.getAttribute('data-index'));
+            if (carrito[index] && carrito[index].qty > 1) {
+                carrito[index].qty--;
                 updateCart();
                 saveCart();
             }
         });
     });
     
-    // Eliminar Item
+    // Eliminar Item usando el índice del array
     document.querySelectorAll('.btn-remove-cart-item').forEach(btn => {
         btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const color = btn.getAttribute('data-color');
-            carrito = carrito.filter(item => !(item.id === id && item.color === color));
+            const index = parseInt(btn.getAttribute('data-index'));
+            carrito.splice(index, 1);
             updateCart();
             saveCart();
             showToast("Producto eliminado del carrito");
         });
     });
 }
+
 
 function saveCart() {
     localStorage.setItem('deines_cart', JSON.stringify(carrito));
@@ -484,11 +502,121 @@ function openQuickView(id) {
         });
     });
     
+    // --- Renderizado y Lógica de Personalización ---
+    const customDiv = document.getElementById('modal-customization-options');
+    const initialsPreview = document.getElementById('modal-initials-preview');
+    
+    if (initialsPreview) {
+        initialsPreview.textContent = "";
+        initialsPreview.style.display = "none";
+    }
+    
+    if (prod.customizable) {
+        customDiv.style.display = 'block';
+        customDiv.innerHTML = `
+            <div class="customization-option-wrapper">
+                <label class="custom-toggle-label">
+                    <input type="checkbox" id="custom-toggle" class="custom-toggle-checkbox">
+                    <span>✨ Personalizar mi bolso (+9,95 €)</span>
+                </label>
+                
+                <div class="customization-fields-panel" id="customization-panel">
+                    <div class="initials-input-wrapper">
+                        <label for="custom-initials">Iniciales grabadas (Máx. 3 letras)</label>
+                        <input type="text" id="custom-initials" placeholder="ABC" maxlength="3" aria-label="Iniciales para grabar">
+                        <span class="initials-input-note">Grabadas en relieve dorado metálico en el centro.</span>
+                    </div>
+                    
+                    <div class="straps-options-wrapper">
+                        <label class="modal-option-title" style="margin-bottom:6px;">Estilo de Bandana / Asa adicional</label>
+                        <div class="straps-grid">
+                            <div class="strap-option-card active" data-name="Bandana Clásica" data-price="0">
+                                <span class="strap-name">Asa Clásica</span>
+                                <span class="strap-price">Incluido</span>
+                            </div>
+                            <div class="strap-option-card" data-name="Bandana Flores" data-price="5">
+                                <span class="strap-name">Bandana Flores</span>
+                                <span class="strap-price">+5,00 €</span>
+                            </div>
+                            <div class="strap-option-card" data-name="Bandana Rayas" data-price="5">
+                                <span class="strap-name">Bandana Rayas</span>
+                                <span class="strap-price">+5,00 €</span>
+                            </div>
+                            <div class="strap-option-card" data-name="Cadena Dorada" data-price="8">
+                                <span class="strap-name">Cadena Dorada</span>
+                                <span class="strap-price">+8,00 €</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const customToggle = document.getElementById('custom-toggle');
+        const customPanel = document.getElementById('customization-panel');
+        const inputInitials = document.getElementById('custom-initials');
+        const strapCards = document.querySelectorAll('.strap-option-card');
+        
+        // Abrir/Cerrar panel de personalización
+        customToggle.addEventListener('change', () => {
+            if (customToggle.checked) {
+                customPanel.classList.add('active');
+                initialsPreview.style.display = "block";
+                updateModalPrice();
+            } else {
+                customPanel.classList.remove('active');
+                initialsPreview.textContent = "";
+                initialsPreview.style.display = "none";
+                inputInitials.value = "";
+                
+                strapCards.forEach(c => c.classList.remove('active'));
+                strapCards[0].classList.add('active');
+                updateModalPrice();
+            }
+        });
+        
+        // Escribir iniciales -> Vista previa en vivo en la foto
+        inputInitials.addEventListener('input', (e) => {
+            const val = e.target.value.toUpperCase().trim();
+            initialsPreview.textContent = val;
+            if (val.length > 0 && customToggle.checked) {
+                initialsPreview.style.display = "block";
+            } else {
+                initialsPreview.style.display = "none";
+            }
+        });
+        
+        // Elegir correa/bandana
+        strapCards.forEach(card => {
+            card.addEventListener('click', () => {
+                strapCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                updateModalPrice();
+            });
+        });
+        
+        function updateModalPrice() {
+            let basePrice = prod.price;
+            let customizationFee = customToggle.checked ? 9.95 : 0;
+            
+            let selectedStrap = document.querySelector('.strap-option-card.active');
+            let strapPrice = selectedStrap ? parseFloat(selectedStrap.getAttribute('data-price')) : 0;
+            
+            let finalPrice = basePrice + customizationFee + strapPrice;
+            modalPrice.textContent = `${finalPrice.toFixed(2)} €`;
+        }
+        
+    } else {
+        customDiv.style.display = 'none';
+        customDiv.innerHTML = '';
+    }
+    
     // Mostrar modal
     quickViewModal.classList.add('active');
     modalBackdrop.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
+
 
 function closeQuickViewModal() {
     quickViewModal.classList.remove('active');
@@ -604,9 +732,29 @@ function initEvents() {
     
     modalAddCartBtn.addEventListener('click', () => {
         const qty = parseInt(modalQtyVal.textContent);
-        addToCart(currentModalProductId, qty, currentModalSelectedColor);
+        
+        // Obtener personalizaciones si están activas
+        let customDetails = null;
+        const customToggle = document.getElementById('custom-toggle');
+        if (customToggle && customToggle.checked) {
+            const inputInitials = document.getElementById('custom-initials');
+            const initials = inputInitials ? inputInitials.value.toUpperCase().trim() : "";
+            
+            const selectedStrap = document.querySelector('.strap-option-card.active');
+            const strapName = selectedStrap ? selectedStrap.getAttribute('data-name') : 'Bandana Clásica';
+            const strapPrice = selectedStrap ? parseFloat(selectedStrap.getAttribute('data-price')) : 0;
+            
+            customDetails = {
+                initials: initials || "Ninguna",
+                strapName: strapName,
+                strapPrice: strapPrice + 9.95 // Sumamos la tarifa fija de personalización (9.95€)
+            };
+        }
+        
+        addToCart(currentModalProductId, qty, currentModalSelectedColor, customDetails);
         closeQuickViewModal();
     });
+
     
     // Toggle de Barra de Búsqueda
     searchTrigger.addEventListener('click', (e) => {
@@ -927,8 +1075,16 @@ function updateCartPage() {
     itemsList.innerHTML = "";
     let subtotal = 0;
     
-    carrito.forEach(item => {
+    carrito.forEach((item, index) => {
         subtotal += item.price * item.qty;
+        
+        // Generar HTML de personalización si existe
+        const customDetailsHTML = item.customDetails ? `
+            <div class="cart-custom-details">
+                <span>Iniciales: <strong>${item.customDetails.initials || 'Ninguna'}</strong></span>
+                <span>Asa: <strong>${item.customDetails.strapName}</strong></span>
+            </div>
+        ` : '';
         
         const itemHTML = document.createElement('div');
         itemHTML.className = 'cart-page-item';
@@ -940,19 +1096,20 @@ function updateCartPage() {
                 <div class="cart-item-desc">
                     <h3>${item.title}</h3>
                     <p>Color: ${item.color.toUpperCase()}</p>
+                    ${customDetailsHTML}
                 </div>
             </div>
             <div class="cart-page-price">${item.price.toFixed(2)} €</div>
             <div class="cart-page-qty-selector">
                 <div class="qty-selector">
-                    <button class="qty-btn btn-page-qty-minus" data-id="${item.id}" data-color="${item.color}"><i class="fa-solid fa-minus"></i></button>
+                    <button class="qty-btn btn-page-qty-minus" data-index="${index}"><i class="fa-solid fa-minus"></i></button>
                     <span class="qty-val">${item.qty}</span>
-                    <button class="qty-btn btn-page-qty-plus" data-id="${item.id}" data-color="${item.color}"><i class="fa-solid fa-plus"></i></button>
+                    <button class="qty-btn btn-page-qty-plus" data-index="${index}"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
             <div class="cart-page-total">
                 <span>${(item.price * item.qty).toFixed(2)} €</span>
-                <button class="btn-cart-page-remove" data-id="${item.id}" data-color="${item.color}" aria-label="Eliminar del carrito">
+                <button class="btn-cart-page-remove" data-index="${index}" aria-label="Eliminar del carrito">
                     <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
@@ -983,14 +1140,12 @@ function updateCartPage() {
 }
 
 function attachCartPageEvents() {
-    // Botones de Incrementar en la página del carrito
+    // Botones de Incrementar en la página del carrito usando índice
     document.querySelectorAll('.btn-page-qty-plus').forEach(btn => {
         btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const color = btn.getAttribute('data-color');
-            const item = carrito.find(item => item.id === id && item.color === color);
-            if (item) {
-                item.qty++;
+            const index = parseInt(btn.getAttribute('data-index'));
+            if (carrito[index]) {
+                carrito[index].qty++;
                 saveCart();
                 updateCart();
                 updateCartPage();
@@ -998,14 +1153,12 @@ function attachCartPageEvents() {
         });
     });
     
-    // Botones de Decrementar en la página del carrito
+    // Botones de Decrementar en la página del carrito usando índice
     document.querySelectorAll('.btn-page-qty-minus').forEach(btn => {
         btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const color = btn.getAttribute('data-color');
-            const item = carrito.find(item => item.id === id && item.color === color);
-            if (item && item.qty > 1) {
-                item.qty--;
+            const index = parseInt(btn.getAttribute('data-index'));
+            if (carrito[index] && carrito[index].qty > 1) {
+                carrito[index].qty--;
                 saveCart();
                 updateCart();
                 updateCartPage();
@@ -1013,12 +1166,11 @@ function attachCartPageEvents() {
         });
     });
     
-    // Eliminar Item en la página del carrito
+    // Eliminar Item en la página del carrito usando índice
     document.querySelectorAll('.btn-cart-page-remove').forEach(btn => {
         btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            const color = btn.getAttribute('data-color');
-            carrito = carrito.filter(item => !(item.id === id && item.color === color));
+            const index = parseInt(btn.getAttribute('data-index'));
+            carrito.splice(index, 1);
             saveCart();
             updateCart();
             updateCartPage();
@@ -1026,6 +1178,7 @@ function attachCartPageEvents() {
         });
     });
 }
+
 
 // --- MÓDULO DE PAGO SEGURO DINÁMICO (CARD, GOOGLE & APPLE PAY) ---
 function showPaymentModal(amount, callbackSuccess) {

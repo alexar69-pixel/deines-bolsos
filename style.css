@@ -2091,3 +2091,141 @@ ul {
     font-weight: 500;
 }
 
+/* ==========================================================================
+   ESTILOS DE PERSONALIZACIÓN DE PRODUCTO (INICIALES Y ASAS/BANDANAS)
+   ========================================================================== */
+
+.customization-option-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.custom-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-dark);
+    cursor: pointer;
+}
+
+.custom-toggle-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-brand-primary);
+    cursor: pointer;
+}
+
+.customization-fields-panel {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    background-color: var(--color-bg-base);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 10px;
+    border: 1px dashed var(--color-border);
+    animation: slideUp 0.3s forwards ease;
+}
+
+.customization-fields-panel.active {
+    display: flex;
+}
+
+.initials-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.initials-input-wrapper input {
+    height: 38px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+}
+
+.initials-input-wrapper input:focus {
+    border-color: var(--color-brand-secondary);
+}
+
+.initials-input-note {
+    font-size: 10px;
+    color: var(--color-text-muted);
+}
+
+.straps-options-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.straps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.strap-option-card {
+    background-color: var(--color-bg-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.strap-option-card:hover {
+    border-color: var(--color-brand-secondary);
+    background-color: var(--color-brand-secondary-light);
+}
+
+.strap-option-card.active {
+    border-color: var(--color-brand-secondary);
+    background-color: var(--color-brand-secondary-light);
+    box-shadow: 0 0 0 2px rgba(126, 171, 162, 0.2);
+}
+
+.strap-option-card .strap-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-dark);
+}
+
+.strap-option-card .strap-price {
+    font-size: 11px;
+    color: var(--color-brand-primary);
+    font-weight: 600;
+}
+
+/* Badge indicando que un producto es personalizado en el carrito */
+.cart-custom-details {
+    font-size: 10px;
+    background-color: var(--color-brand-secondary-light);
+    color: var(--color-text-dark);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    border-left: 2px solid var(--color-brand-secondary);
+    font-weight: 500;
+}
+
+

@@ -595,23 +595,30 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
         <div class="modal-grid">
-            <div class="modal-media">
-                <img src="" alt="" id="modal-product-img">
+            <div class="modal-media" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                <img src="" alt="" id="modal-product-img" style="width: 100%; height: 100%; object-fit: cover;">
+                <div id="modal-initials-preview" class="initials-preview-badge" style="position: absolute; bottom: 35%; left: 50%; transform: translateX(-50%); font-family: var(--font-serif); font-size: 20px; font-weight: 600; letter-spacing: 0.15em; color: #d4af37; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); opacity: 0.85; pointer-events: none; text-transform: uppercase;"></div>
             </div>
-            <div class="modal-content">
+            <div class="modal-content" style="max-height: 85vh; overflow-y: auto; padding: 30px;">
                 <div class="product-meta-cat" id="modal-product-cat">Bolsos</div>
                 <h2 class="modal-title" id="modal-product-title">Nombre del Bolso</h2>
                 <div class="modal-price-row">
                     <span class="modal-price" id="modal-product-price">0,00 €</span>
                 </div>
-                <p class="modal-desc" id="modal-product-desc">Descripción detallada del bolso.</p>
+                <p class="modal-desc" id="modal-product-desc" style="font-size:12px; margin-bottom:12px;">Descripción detallada del bolso.</p>
                 
-                <div class="modal-option-title">Color Seleccionado</div>
-                <div class="modal-colors-row">
+                <div class="modal-option-title" style="margin-bottom: 6px;">Color Seleccionado</div>
+                <div class="modal-colors-row" style="margin-bottom: 12px;">
                     <div class="modal-color-dots" id="modal-product-colors">
                         <!-- Cargados dinámicamente -->
                     </div>
                 </div>
+
+                <!-- Contenedor Opciones de Personalización -->
+                <div id="modal-customization-options" style="display: none; border-top: 1px dashed var(--color-border); padding-top: 15px; margin-bottom: 15px;">
+                    <!-- Inyectado desde app.js -->
+                </div>
+
                 
                 <div class="modal-qty-add-row">
                     <div class="qty-selector">
