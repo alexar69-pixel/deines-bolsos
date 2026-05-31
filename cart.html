@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Tu Carrito | DEINES Bolsos y Complementos</title>
+    <meta name="description" content="Revisa tu carrito de compras en DEINES. Gestiona tus bolsos de diseño, aplica códigos de descuento y procede al pago seguro. Envío rápido 24/48h.">
+    <meta name="robots" content="noindex, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👜</text></svg>">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- FontAwesome para Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Estilos específicos adicionales para la página de carrito (Inyectados directamente para no alterar en exceso style.css) -->
+    <style>
+        .cart-page-section {
+            padding: 60px 0 80px;
+        }
+        .cart-page-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        .cart-page-left {
+            background-color: var(--color-bg-white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+        .cart-table-header {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-text-muted);
+        }
+        .cart-page-items {
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-page-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        .cart-page-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item-product-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .cart-page-item-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #F7F5F0;
+            flex-shrink: 0;
+        }
+        .cart-page-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .cart-item-desc h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .cart-item-desc p {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+        .cart-page-price {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .cart-page-qty-selector {
+            display: flex;
+            justify-content: flex-start;
+        }
+        .cart-page-total {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-cart-page-remove {
+            color: var(--color-text-muted);
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+        }
+        .btn-cart-page-remove:hover {
+            color: var(--color-brand-primary);
+            background-color: rgba(211, 123, 104, 0.08);
+        }
+        
+        /* Summary Sidebar */
+        .cart-page-summary {
+            background-color: var(--color-bg-white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+        .summary-title {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 12px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            border-top: 1px solid var(--color-border);
+            padding-top: 16px;
+            margin-top: 16px;
+            color: var(--color-text-dark);
+        }
+        
+        /* Cupón de descuento */
+        .coupon-box {
+            margin-top: 20px;
+            border-top: 1px dashed var(--color-border);
+            padding-top: 20px;
+        }
+        .coupon-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .coupon-input {
+            flex-grow: 1;
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            outline: none;
+        }
+        .btn-coupon {
+            background-color: var(--color-text-dark);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .btn-coupon:hover {
+            background-color: var(--color-brand-primary);
+        }
+        .coupon-message {
+            font-size: 11px;
+            margin-top: 6px;
+            min-height: 15px;
+        }
+        .coupon-message.success { color: #2F855A; }
+        .coupon-message.error { color: #C53030; }
+
+        .btn-cart-page-checkout {
+            display: block;
+            width: 100%;
+            background-color: var(--color-brand-primary);
+            color: white;
+            text-align: center;
+            padding: 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 13px;
+            margin-top: 24px;
+            box-shadow: 0 4px 10px rgba(211, 123, 104, 0.2);
+        }
+        .btn-cart-page-checkout:hover {
+            background-color: var(--color-brand-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(211, 123, 104, 0.3);
+        }
+        
+        .continue-shopping-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-top: 24px;
+        }
+        .continue-shopping-link:hover {
+            color: var(--color-brand-primary);
+        }
+
+        /* Empty Cart State on Cart Page */
+        .cart-page-empty {
+            text-align: center;
+            padding: 80px 40px;
+            background-color: var(--color-bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .cart-page-empty i {
+            font-size: 60px;
+            color: var(--color-border);
+            margin-bottom: 20px;
+        }
+        .cart-page-empty h2 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        .cart-page-empty p {
+            color: var(--color-text-muted);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 992px) {
+            .cart-page-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .cart-table-header {
+                display: none;
+            }
+            .cart-page-item {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 20px 0;
+            }
+            .cart-item-product-info {
+                align-items: flex-start;
+            }
+            .cart-page-qty-selector, .cart-page-total {
+                justify-content: space-between;
+                border-top: 1px solid rgba(226, 232, 240, 0.3);
+                padding-top: 10px;
+            }
+            .cart-page-qty-selector::before {
+                content: 'Cantidad:';
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--color-text-muted);
+                align-self: center;
+            }
+            .cart-page-total::before {
+                content: 'Total:';
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--color-text-muted);
+            }
+            .cart-page-price {
+                display: flex;
+                justify-content: space-between;
+            }
+            .cart-page-price::before {
+                content: 'Precio unitario:';
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--color-text-muted);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de Anuncios Superior -->
+    <div class="announcement-bar">
+        ✨ Envíos gratis en pedidos superiores a 80€ en toda España ✨
+    </div>
+
+    <!-- Cabecera de Navegación -->
+    <header class="header-main">
+        <div class="container header-container">
+            <!-- Logotipo de la Marca -->
+            <a href="index.html" class="logo-container">
+                <span class="logo-main">DEINES</span>
+                <span class="logo-sub">Moda y complementos</span>
+            </a>
+            
+            <!-- Menú Escritorio -->
+            <nav class="nav-desktop">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="index.html#novedades" class="nav-link">Bolsos</a>
+                <a href="index.html#novedades" class="nav-link">Novedades</a>
+                <a href="index.html#mas-vendidos" class="nav-link">Mochilas</a>
+                <a href="index.html#newsletter" class="nav-link">Sale</a>
+            </nav>
+            
+            <!-- Acciones Rápidas (Iconos) -->
+            <div class="header-actions">
+                <a href="index.html" class="action-btn" aria-label="Volver a Inicio">
+                    <i class="fa-solid fa-house"></i>
+                </a>
+                <button class="action-btn" id="btn-cart-trigger" aria-label="Ver Carrito">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-count-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal de la Página de Carrito -->
+    <main class="cart-page-section" id="cart-page-container">
+        <div class="container">
+            
+            <!-- Si el carrito está vacío se mostrará esto dinámicamente -->
+            <div class="cart-page-empty" id="cart-page-empty-state" style="display: none;">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <h2>Tu carrito está vacío</h2>
+                <p>Parece que aún no has seleccionado ningún bolso para añadir a tu colección.</p>
+                <a href="index.html#novedades" class="btn-cart-page-checkout" style="display: inline-block; width: auto; padding: 12px 30px;">Ver novedades</a>
+            </div>
+
+            <!-- Carrito lleno -->
+            <div class="cart-page-grid" id="cart-page-filled-state">
+                
+                <!-- Columna Izquierda: Detalle de Productos -->
+                <div class="cart-page-left">
+                    <div class="cart-table-header">
+                        <span>Producto</span>
+                        <span>Precio</span>
+                        <span>Cantidad</span>
+                        <span style="text-align: right;">Total</span>
+                    </div>
+                    
+                    <!-- Elementos inyectados dinámicamente desde app.js -->
+                    <div class="cart-page-items" id="cart-page-items-list"></div>
+                    
+                    <a href="index.html#novedades" class="continue-shopping-link">
+                        <i class="fa-solid fa-arrow-left"></i> Continuar comprando
+                    </a>
+                </div>
+                
+                <!-- Columna Derecha: Resumen de Pedido -->
+                <aside class="cart-page-right">
+                    <div class="cart-page-summary">
+                        <h2 class="summary-title">Resumen del pedido</h2>
+                        
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="cart-page-subtotal">0,00 €</span>
+                        </div>
+                        
+                        <div class="summary-row" id="cart-page-shipping-row">
+                            <span>Envío</span>
+                            <span id="cart-page-shipping">Calculando...</span>
+                        </div>
+
+                        <div class="summary-row" id="cart-page-discount-row" style="display: none; color: #2F855A; font-weight: 500;">
+                            <span>Descuento (10%)</span>
+                            <span id="cart-page-discount">-0,00 €</span>
+                        </div>
+                        
+                        <div class="summary-row total">
+                            <span>Total (IVA incl.)</span>
+                            <span id="cart-page-total-val">0,00 €</span>
+                        </div>
+                        
+                        <!-- Formulario de cupón de descuento -->
+                        <div class="coupon-box">
+                            <label for="coupon-input" class="modal-option-title" style="margin-bottom: 4px; display: block;">¿Tienes un código?</label>
+                            <form class="coupon-form" id="coupon-form">
+                                <input type="text" class="coupon-input" id="coupon-input" placeholder="Introduce tu código" aria-label="Código de descuento">
+                                <button type="submit" class="btn-coupon">Aplicar</button>
+                            </form>
+                            <div class="coupon-message" id="coupon-message"></div>
+                        </div>
+                        
+                        <button class="btn-cart-page-checkout" id="btn-cart-page-checkout">Finalizar Compra</button>
+                    </div>
+                </aside>
+                
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Pie de Página (Footer) -->
+    <footer class="footer-main">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <span class="logo-main">DEINES</span>
+                <p class="logo-sub" style="margin-top: 0;">Moda y complementos</p>
+                <p class="footer-brand-desc">Tienda de bolsos y complementos con diseños propios, calidad garantizada y atención 100% personalizada.</p>
+                <div class="social-links">
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/deines_bolsos" target="_blank" class="social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#" class="social-btn" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Comprar</h3>
+                <ul>
+                    <li><a href="index.html#novedades">Bolsos</a></li>
+                    <li><a href="index.html#novedades">Novedades</a></li>
+                    <li><a href="index.html#mas-vendidos">Complementos</a></li>
+                    <li><a href="index.html#newsletter">Sale</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Ayuda</h3>
+                <ul>
+                    <li><a href="index.html#faq">Envíos</a></li>
+                    <li><a href="index.html#faq">Devoluciones</a></li>
+                    <li><a href="index.html#faq">Preguntas Frecuentes</a></li>
+                    <li><a href="tel:+34620950151">Contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Información</h3>
+                <ul>
+                    <li><a href="index.html#faq">Sobre nosotros</a></li>
+                    <li><a href="#">Tienda física</a></li>
+                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Tienda Física</h3>
+                <div class="footer-contact-info">
+                    <p><i class="fa-solid fa-location-dot" style="color: var(--color-brand-primary); margin-right: 8px;"></i> Augusto Figueroa 32,<br>28004 Madrid</p>
+                    <p><i class="fa-solid fa-phone" style="color: var(--color-brand-primary); margin-right: 8px;"></i> +34 620 95 01 51</p>
+                    <p><i class="fa-regular fa-clock" style="color: var(--color-brand-primary); margin-right: 8px;"></i> Lun - Sáb: 10:30 - 20:30</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container footer-bottom">
+            <p>&copy; 2026 DEINES - Todos los derechos reservados.</p>
+            <div class="payment-methods" aria-label="Métodos de pago aceptados">
+                <i class="fa-brands fa-cc-visa" style="color: #1A1F71;"></i>
+                <i class="fa-brands fa-cc-mastercard" style="color: #EB001B;"></i>
+                <i class="fa-brands fa-cc-apple-pay" style="color: #000000;"></i>
+                <i class="fa-brands fa-cc-paypal" style="color: #003087;"></i>
+                <i class="fa-brands fa-cc-stripe" style="color: #635BFF;"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CAPA OSCURECEDORA DE FONDO (Para cuando se pulse el icono de bolsa) -->
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+
+    <!-- CARRITO LATERAL SLIDE-OUT (Opcional por si pulsan el trigger del header) -->
+    <aside class="cart-sidebar" id="cart-sidebar" aria-label="Carrito de compras rápido">
+        <div class="cart-header">
+            <h2>Mi Carrito Rápido</h2>
+            <button class="btn-close-cart" id="btn-close-cart" aria-label="Cerrar Carrito">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <div class="shipping-promo-bar">
+            <div class="shipping-promo-text" id="shipping-promo-text">
+                ¡Añade <strong>80,00 €</strong> más para conseguir envío gratis!
+            </div>
+            <div class="shipping-progress-bg">
+                <div class="shipping-progress-fill" id="shipping-progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="cart-items-list" id="cart-items-list">
+            <div class="cart-empty-message" id="cart-empty-message">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <p>Tu carrito está vacío</p>
+                <a href="index.html#novedades" class="campaign-btn" style="padding: 10px 24px; font-size: 11px;">Empezar a comprar</a>
+            </div>
+        </div>
+        
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total-row">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">0,00 €</span>
+            </div>
+            <button class="btn-checkout" onclick="window.location.reload();">Recargar página</button>
+        </div>
+    </aside>
+
+    <!-- JavaScript Principal -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -791,4 +791,224 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCatalog();
     updateCart();
     initEvents();
+    
+    // Si estamos en la página del carrito
+    if (document.getElementById('cart-page-container')) {
+        initCartPage();
+    }
 });
+
+// --- Lógica de la Página de Carrito Completo (cart.html) ---
+let descuentoAplicado = parseFloat(localStorage.getItem('deines_discount')) || 0; // Porcentaje de descuento
+
+function initCartPage() {
+    updateCartPage();
+    
+    // Evento del formulario de cupón
+    const couponForm = document.getElementById('coupon-form');
+    const couponInput = document.getElementById('coupon-input');
+    const couponMessage = document.getElementById('coupon-message');
+    
+    if (couponForm) {
+        if (descuentoAplicado > 0) {
+            couponMessage.textContent = "Cupón del 10% aplicado con éxito.";
+            couponMessage.className = "coupon-message success";
+        }
+
+        couponForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const code = couponInput.value.toUpperCase().trim();
+            
+            if (code === 'DEINES10' || code === 'BIENVENIDA') {
+                descuentoAplicado = 0.10; // 10%
+                localStorage.setItem('deines_discount', descuentoAplicado);
+                couponMessage.textContent = "¡Cupón del 10% de descuento aplicado con éxito!";
+                couponMessage.className = "coupon-message success";
+                showToast("Cupón de descuento aplicado");
+                updateCartPage();
+            } else {
+                couponMessage.textContent = "Código de cupón no válido.";
+                couponMessage.className = "coupon-message error";
+            }
+        });
+    }
+    
+    // Botón de Checkout de la página de carrito
+    const btnCartPageCheckout = document.getElementById('btn-cart-page-checkout');
+    if (btnCartPageCheckout) {
+        btnCartPageCheckout.addEventListener('click', () => {
+            const numPedido = Math.floor(Math.random() * 900000) + 100000;
+            
+            // Crear el modal de éxito
+            const checkoutModal = document.createElement('div');
+            checkoutModal.style.position = 'fixed';
+            checkoutModal.style.top = '50%';
+            checkoutModal.style.left = '50%';
+            checkoutModal.style.transform = 'translate(-50%, -50%)';
+            checkoutModal.style.backgroundColor = 'var(--color-bg-white)';
+            checkoutModal.style.padding = '40px';
+            checkoutModal.style.borderRadius = '24px';
+            checkoutModal.style.boxShadow = 'var(--shadow-modal)';
+            checkoutModal.style.zIndex = '2000';
+            checkoutModal.style.textAlign = 'center';
+            checkoutModal.style.maxWidth = '400px';
+            checkoutModal.style.width = '90%';
+            checkoutModal.style.animation = 'slideUp 0.4s ease forwards';
+            
+            checkoutModal.innerHTML = `
+                <div style="font-size: 50px; color: var(--color-brand-secondary); margin-bottom: 20px;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 style="font-family: var(--font-serif); font-size: 26px; margin-bottom: 12px;">¡Gracias por tu compra!</h2>
+                <p style="font-size: 14px; color: var(--color-text-muted); margin-bottom: 20px; line-height:1.5;">Tu pedido <strong>#DE-${numPedido}</strong> se ha procesado con éxito y se encuentra en preparación para envío de 24/48h.</p>
+                <button id="btn-close-cart-page-success" class="campaign-btn" style="width: 100%; border-radius: 20px; padding: 12px;">Aceptar</button>
+            `;
+            
+            document.body.appendChild(checkoutModal);
+            modalBackdrop.style.zIndex = '1999';
+            modalBackdrop.classList.add('active');
+            
+            document.getElementById('btn-close-cart-page-success').addEventListener('click', () => {
+                checkoutModal.remove();
+                modalBackdrop.classList.remove('active');
+                modalBackdrop.style.zIndex = '';
+                
+                // Vaciar carrito
+                carrito = [];
+                descuentoAplicado = 0;
+                localStorage.removeItem('deines_discount');
+                saveCart();
+                updateCart();
+                
+                // Redirigir a inicio
+                window.location.href = "index.html";
+            });
+        });
+    }
+}
+
+function updateCartPage() {
+    const filledState = document.getElementById('cart-page-filled-state');
+    const emptyState = document.getElementById('cart-page-empty-state');
+    const itemsList = document.getElementById('cart-page-items-list');
+    
+    const subtotalEl = document.getElementById('cart-page-subtotal');
+    const shippingEl = document.getElementById('cart-page-shipping');
+    const discountRow = document.getElementById('cart-page-discount-row');
+    const discountEl = document.getElementById('cart-page-discount');
+    const totalEl = document.getElementById('cart-page-total-val');
+    
+    if (!itemsList) return;
+    
+    if (carrito.length === 0) {
+        filledState.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    filledState.style.display = 'grid';
+    emptyState.style.display = 'none';
+    
+    itemsList.innerHTML = "";
+    let subtotal = 0;
+    
+    carrito.forEach(item => {
+        subtotal += item.price * item.qty;
+        
+        const itemHTML = document.createElement('div');
+        itemHTML.className = 'cart-page-item';
+        itemHTML.innerHTML = `
+            <div class="cart-item-product-info">
+                <div class="cart-page-item-img">
+                    <img src="${item.image}" alt="${item.title}">
+                </div>
+                <div class="cart-item-desc">
+                    <h3>${item.title}</h3>
+                    <p>Color: ${item.color.toUpperCase()}</p>
+                </div>
+            </div>
+            <div class="cart-page-price">${item.price.toFixed(2)} €</div>
+            <div class="cart-page-qty-selector">
+                <div class="qty-selector">
+                    <button class="qty-btn btn-page-qty-minus" data-id="${item.id}" data-color="${item.color}"><i class="fa-solid fa-minus"></i></button>
+                    <span class="qty-val">${item.qty}</span>
+                    <button class="qty-btn btn-page-qty-plus" data-id="${item.id}" data-color="${item.color}"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="cart-page-total">
+                <span>${(item.price * item.qty).toFixed(2)} €</span>
+                <button class="btn-cart-page-remove" data-id="${item.id}" data-color="${item.color}" aria-label="Eliminar del carrito">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </div>
+        `;
+        itemsList.appendChild(itemHTML);
+    });
+    
+    // Calcular totales
+    const envioGratisMeta = 80;
+    let shipping = subtotal >= envioGratisMeta ? 0 : 3.95;
+    let discount = subtotal * descuentoAplicado;
+    let total = subtotal + shipping - discount;
+    
+    subtotalEl.textContent = `${subtotal.toFixed(2)} €`;
+    shippingEl.textContent = shipping === 0 ? "Gratis" : `${shipping.toFixed(2)} €`;
+    
+    if (discount > 0) {
+        discountRow.style.display = 'flex';
+        discountEl.textContent = `-${discount.toFixed(2)} €`;
+    } else {
+        discountRow.style.display = 'none';
+    }
+    
+    totalEl.textContent = `${total.toFixed(2)} €`;
+    
+    // Adjuntar eventos específicos de la página del carrito
+    attachCartPageEvents();
+}
+
+function attachCartPageEvents() {
+    // Botones de Incrementar en la página del carrito
+    document.querySelectorAll('.btn-page-qty-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const color = btn.getAttribute('data-color');
+            const item = carrito.find(item => item.id === id && item.color === color);
+            if (item) {
+                item.qty++;
+                saveCart();
+                updateCart();
+                updateCartPage();
+            }
+        });
+    });
+    
+    // Botones de Decrementar en la página del carrito
+    document.querySelectorAll('.btn-page-qty-minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const color = btn.getAttribute('data-color');
+            const item = carrito.find(item => item.id === id && item.color === color);
+            if (item && item.qty > 1) {
+                item.qty--;
+                saveCart();
+                updateCart();
+                updateCartPage();
+            }
+        });
+    });
+    
+    // Eliminar Item en la página del carrito
+    document.querySelectorAll('.btn-cart-page-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const color = btn.getAttribute('data-color');
+            carrito = carrito.filter(item => !(item.id === id && item.color === color));
+            saveCart();
+            updateCart();
+            updateCartPage();
+            showToast("Producto eliminado del carrito");
+        });
+    });
+}
+
